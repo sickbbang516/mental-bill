@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { toPng } from 'html-to-image';
 
 type Lang = 'ko' | 'en' | 'ja' | 'zh';
 type Theme = 'receipt' | 'tax' | 'voucher';
@@ -366,8 +367,19 @@ export default function InvoiceApp() {
   };
 
   const handleSaveImage = () => {
-    triggerInterstitialAd(() => {
-      alert(lang === 'ko' ? '청구서 이미지 저장이 완료되었습니다.' : 'Invoice image saved.');
+    triggerInterstitialAd(async () => {
+      if (receiptRef.current) {
+        try {
+          const dataUrl = await toPng(receiptRef.current, { cacheBust: true, quality: 0.95 });
+          const link = document.createElement('a');
+          link.download = `mental-bill-${docNo}.png`;
+          link.href = dataUrl;
+          link.click();
+        } catch (err) {
+          console.error('이미지 저장 실패:', err);
+          alert('이미지 저장 중 오류가 발생했습니다.');
+        }
+      }
     });
   };
 
