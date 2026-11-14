@@ -15,6 +15,8 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7345794387970448"
+     crossorigin="anonymous"></script>
       </head>
       <body className="antialiased bg-[#E5E5E5] text-[#111111]">
         {children}
