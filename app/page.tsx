@@ -336,10 +336,11 @@ export default function InvoiceApp() {
 
   const triggerInterstitialAd = (onComplete: () => void) => {
     setIsAdPlaying(true);
+    // 광고 노출 및 로딩 연출 시간 (2.5초)
     setTimeout(() => {
       setIsAdPlaying(false);
       onComplete();
-    }, 1800);
+    }, 2500);
   };
 
   const handleSendInvoice = () => {
@@ -948,10 +949,10 @@ export default function InvoiceApp() {
           <p className="text-[11px] text-zinc-500 leading-relaxed break-keep">
             {t.footerDisclaimer}
             <div className="mt-2">
-  <a href="/privacy" className="underline text-[11px] text-zinc-600 hover:text-black">
-    개인정보처리방침 / Privacy Policy
-  </a>
-</div>
+              <a href="/privacy" className="underline text-[11px] text-zinc-600 hover:text-black">
+                개인정보처리방침 / Privacy Policy
+              </a>
+            </div>
           </p>
         </footer>
       </main>
@@ -962,16 +963,39 @@ export default function InvoiceApp() {
         </div>
       )}
 
+      {/* 팝업 발행/저장 시 나타나는 광고 연동 로딩 모달 */}
       {isAdPlaying && (
         <div className="fixed inset-0 bg-black/90 text-white flex flex-col items-center justify-center z-50 p-6 text-center">
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-4" />
-          <p className="text-xs tracking-wider">{t.adNotice}</p>
+          <p className="text-xs tracking-wider mb-4">{t.adNotice}</p>
+
+          {/* 구글 애드센스 광고 단위 삽입 영역 (승인 완료 시 자동으로 광고가 송출됨) */}
+          <div className="w-full max-w-sm bg-white text-black p-4 rounded-xl shadow-lg">
+            <div className="min-h-[180px] flex flex-col items-center justify-center border border-dashed border-zinc-300 rounded-lg p-2 bg-zinc-50 relative">
+              <ins
+                className="adsbygoogle"
+                style={{ display: 'block', width: '100%', height: '100%' }}
+                data-ad-client="ca-pub-7345794387970448"
+                data-ad-slot="YOUR_AD_SLOT_ID"
+                data-ad-format="auto"
+                data-full-width-responsive="true"
+              ></ins>
+              <span className="text-[10px] text-zinc-400 mt-2">ADVERTISEMENT SPACE</span>
+            </div>
+          </div>
         </div>
       )}
 
+      {/* 웹사이트 하단 고정 배너 광고 영역 */}
       <div className="fixed bottom-0 left-0 right-0 h-14 bg-zinc-200 border-t border-zinc-300 flex items-center justify-center z-30">
         <div className="w-[320px] h-[50px] bg-zinc-300 border border-zinc-400 flex items-center justify-center text-[10px] font-mono text-zinc-600">
-          ADVERTISEMENT (320x50)
+          <ins
+            className="adsbygoogle"
+            style={{ display: 'inline-block', width: '320px', height: '50px' }}
+            data-ad-client="ca-pub-7345794387970448"
+            data-ad-slot="YOUR_BOTTOM_AD_SLOT_ID"
+          ></ins>
+          <span className="absolute text-[9px] text-zinc-500 pointer-events-none">ADVERTISEMENT (320x50)</span>
         </div>
       </div>
     </div>
