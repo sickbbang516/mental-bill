@@ -370,7 +370,12 @@ export default function InvoiceApp() {
     triggerInterstitialAd(async () => {
       if (receiptRef.current) {
         try {
-          const dataUrl = await toPng(receiptRef.current, { cacheBust: true, quality: 0.95 });
+          // pixelRatio를 3으로 높여 인쇄 시에도 깨지지 않는 고해상도 이미지 생성
+          const dataUrl = await toPng(receiptRef.current, {
+            cacheBust: true,
+            quality: 1.0,
+            pixelRatio: 3
+          });
           const link = document.createElement('a');
           link.download = `mental-bill-${docNo}.png`;
           link.href = dataUrl;
@@ -400,27 +405,27 @@ export default function InvoiceApp() {
 
   const view = receivedData
     ? {
-        from: receivedData.from,
-        to: receivedData.to,
-        items: receivedData.items,
-        feePercent: receivedData.feePercent,
-        clause: receivedData.clause,
-        theme: receivedData.theme,
-        docNo: receivedData.docNo,
-        date: receivedData.date,
-        subtotal: receivedData.items.reduce((a, b) => a + b.amount, 0),
-      }
+      from: receivedData.from,
+      to: receivedData.to,
+      items: receivedData.items,
+      feePercent: receivedData.feePercent,
+      clause: receivedData.clause,
+      theme: receivedData.theme,
+      docNo: receivedData.docNo,
+      date: receivedData.date,
+      subtotal: receivedData.items.reduce((a, b) => a + b.amount, 0),
+    }
     : {
-        from: fromName.trim() || ' ',
-        to: toName.trim() || ' ',
-        items: validItems,
-        feePercent,
-        clause: clause.trim(),
-        theme,
-        docNo,
-        date: issueDate || ' ',
-        subtotal,
-      };
+      from: fromName.trim() || ' ',
+      to: toName.trim() || ' ',
+      items: validItems,
+      feePercent,
+      clause: clause.trim(),
+      theme,
+      docNo,
+      date: issueDate || ' ',
+      subtotal,
+    };
 
   const viewFee = Math.round(view.subtotal * (view.feePercent / 100));
   const viewTotal = view.subtotal + viewFee;
@@ -435,11 +440,10 @@ export default function InvoiceApp() {
             <button
               key={l}
               onClick={() => setLang(l)}
-              className={`px-2 py-0.5 border ${
-                lang === l
+              className={`px-2 py-0.5 border ${lang === l
                   ? 'bg-white text-black border-white font-bold'
                   : 'border-zinc-600 text-zinc-400 hover:text-white'
-              }`}
+                }`}
             >
               {l.toUpperCase()}
             </button>
@@ -805,11 +809,10 @@ export default function InvoiceApp() {
                   <button
                     key={th}
                     onClick={() => setTheme(th)}
-                    className={`py-2 border font-bold transition ${
-                      theme === th
+                    className={`py-2 border font-bold transition ${theme === th
                         ? 'bg-[#111111] text-white border-[#111111]'
                         : 'bg-zinc-50 text-zinc-700 border-zinc-300 hover:bg-zinc-100'
-                    }`}
+                      }`}
                   >
                     {t.themes[th]}
                   </button>
@@ -868,7 +871,6 @@ export default function InvoiceApp() {
                     />
                     <input
                       type="text"
-                      inputMode="numeric"
                       value={item.amount ? Number(item.amount).toLocaleString() : ''}
                       onChange={(e) => updateLineItem(item.id, 'amount', e.target.value)}
                       placeholder={t.amountPlaceholder}
