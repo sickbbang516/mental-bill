@@ -947,6 +947,11 @@ export default function InvoiceApp() {
         <footer className="pt-2 pb-6 text-center px-2">
           <p className="text-[11px] text-zinc-500 leading-relaxed break-keep">
             {t.footerDisclaimer}
+            <div className="mt-2">
+  <a href="/privacy" className="underline text-[11px] text-zinc-600 hover:text-black">
+    개인정보처리방침 / Privacy Policy
+  </a>
+</div>
           </p>
         </footer>
       </main>
