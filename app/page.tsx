@@ -336,11 +336,11 @@ export default function InvoiceApp() {
 
   const triggerInterstitialAd = (onComplete: () => void) => {
     setIsAdPlaying(true);
-    // 광고 노출 및 로딩 연출 시간 (2.5초)
+    // 광고 노출 및 충분한 시청을 위해 5초(5000ms)로 연장
     setTimeout(() => {
       setIsAdPlaying(false);
       onComplete();
-    }, 2500);
+    }, 5000);
   };
 
   const handleSendInvoice = () => {
