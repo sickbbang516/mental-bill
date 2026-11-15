@@ -64,6 +64,11 @@ const I18N = {
     docDisclaimer: '※ 본 문서는 유희 및 엔터테인먼트 목적의 가상 청구서이며 어떠한 법적 효력도 갖지 않습니다.',
     footerDisclaimer:
       '면책 및 이용 고지: 본 서비스에서 생성되는 모든 문서는 오락 목적의 가상 콘텐츠이며, 실제 채권·채무 관계나 법적 효력이 전혀 없습니다. 타인의 명의나 실제 사업자 정보를 도용하여 금전을 요구하는 행위는 엄격히 금지됩니다.',
+    guideTitle: '이용 가이드',
+    guideContent: '1. 상단에서 청구서 언어를 선택하세요.\n2. 청구인 및 수신자 정보를 자유롭게 입력하세요.\n3. 내역과 금액을 적으면 총 금액이 자동으로 계산됩니다.\n4. 하단의 [청구서 발행 및 링크 복사] 또는 [이미지 파일로 저장]을 눌러 활용하세요.',
+    aboutTitle: '서비스 소개',
+    aboutContent: '\'mental-bill\'은 일상 속 유머와 밈(Meme)을 위해 제작된 가상의 패러디 인보이스(청구서) 생성 툴입니다. 친구나 지인, 혹은 상사에게 재미있는 청구서를 보내며 가벼운 웃음을 나누기 위해 만들어졌습니다.',
+    close: '닫기',
   },
   en: {
     currency: '$',
@@ -104,6 +109,11 @@ const I18N = {
     docDisclaimer: '* This is a fictional document created strictly for entertainment purposes and holds no legal validity.',
     footerDisclaimer:
       'DISCLAIMER: All documents generated on this site are parodies for entertainment only and carry zero legal or financial obligation. Impersonating third parties or real businesses to demand money is strictly prohibited.',
+    guideTitle: 'User Guide',
+    guideContent: '1. Select the invoice language at the top.\n2. Enter the biller and recipient details freely.\n3. Add line items and amounts to auto-calculate the total.\n4. Click [Generate & Copy Link] or [Save as Image] at the bottom.',
+    aboutTitle: 'About Service',
+    aboutContent: '\'mental-bill\' is a parody invoice generator built for daily humor and memes. It\'s designed to share lighthearted laughs by sending funny bills to friends or colleagues.',
+    close: 'Close',
   },
   ja: {
     currency: '¥',
@@ -144,6 +154,11 @@ const I18N = {
     docDisclaimer: '※ 本書はジョーク・エンターテインメント目的の仮想請求書であり、法的な効力は一切ありません。',
     footerDisclaimer:
       '免責事項：当サイトで作成されるすべての書類は娯楽目的のフィクションであり、法的効力や支払義務は一切生じません。他人の名義や実在の事業者情報を冒用して金銭を要求する行為は禁止されています。',
+    guideTitle: '利用ガイド',
+    guideContent: '1. 上部で請求書の言語を選択します。\n2. 発行者と宛先の情報を自由に入力します。\n3. 項目と金額を入力すると、合計が自動計算されます。\n4. 下部の[請求書発行＆リンクコピー]または[画像として保存]をご利用ください。',
+    aboutTitle: 'サービス紹介',
+    aboutContent: '「mental-bill」は、日常のユーモアとミームのために作られた仮想のパロディ請求書ジェネレーターです。友人や同僚に面白い請求書を送って、軽い笑いを共有するために設計されています。',
+    close: '閉じる',
   },
   zh: {
     currency: '¥',
@@ -184,6 +199,11 @@ const I18N = {
     docDisclaimer: '※ 本单据仅为娱乐互动生成的虚拟内容，不具备任何法律效力。',
     footerDisclaimer:
       '免责声明：本网站生成的所有单据均为娱乐恶搞用途，不构成任何真实债权债务关系或法律效力。严禁冒用他人名义或真实商户信息索取钱财。',
+    guideTitle: '使用指南',
+    guideContent: '1. 在顶部选择发票语言。\n2. 自由输入开单人和收件人信息。\n3. 添加明细和金额，总计将自动计算。\n4. 点击底部的[生成并复制链接]或[保存为图片]。',
+    aboutTitle: '关于服务',
+    aboutContent: '\'mental-bill\' 是一个为日常幽默和梗（Meme）而创建的虚拟恶搞发票生成工具。旨在通过向朋友或同事发送有趣的账单来分享轻松的笑声。',
+    close: '关闭',
   },
 };
 
@@ -337,7 +357,6 @@ export default function InvoiceApp() {
 
   const triggerInterstitialAd = (onComplete: () => void) => {
     setIsAdPlaying(true);
-    // 광고 노출 및 충분한 시청을 위해 5초(5000ms)로 연장
     setTimeout(() => {
       setIsAdPlaying(false);
       onComplete();
@@ -370,11 +389,10 @@ export default function InvoiceApp() {
     triggerInterstitialAd(async () => {
       if (receiptRef.current) {
         try {
-          // pixelRatio를 3으로 높여 인쇄 시에도 깨지지 않는 고해상도 이미지 생성
           const dataUrl = await toPng(receiptRef.current, {
             cacheBust: true,
             quality: 1.0,
-            pixelRatio: 3
+            pixelRatio: 3,
           });
           const link = document.createElement('a');
           link.download = `mental-bill-${docNo}.png`;
@@ -405,27 +423,27 @@ export default function InvoiceApp() {
 
   const view = receivedData
     ? {
-      from: receivedData.from,
-      to: receivedData.to,
-      items: receivedData.items,
-      feePercent: receivedData.feePercent,
-      clause: receivedData.clause,
-      theme: receivedData.theme,
-      docNo: receivedData.docNo,
-      date: receivedData.date,
-      subtotal: receivedData.items.reduce((a, b) => a + b.amount, 0),
-    }
+        from: receivedData.from,
+        to: receivedData.to,
+        items: receivedData.items,
+        feePercent: receivedData.feePercent,
+        clause: receivedData.clause,
+        theme: receivedData.theme,
+        docNo: receivedData.docNo,
+        date: receivedData.date,
+        subtotal: receivedData.items.reduce((a, b) => a + b.amount, 0),
+      }
     : {
-      from: fromName.trim() || ' ',
-      to: toName.trim() || ' ',
-      items: validItems,
-      feePercent,
-      clause: clause.trim(),
-      theme,
-      docNo,
-      date: issueDate || ' ',
-      subtotal,
-    };
+        from: fromName.trim() || ' ',
+        to: toName.trim() || ' ',
+        items: validItems,
+        feePercent,
+        clause: clause.trim(),
+        theme,
+        docNo,
+        date: issueDate || ' ',
+        subtotal,
+      };
 
   const viewFee = Math.round(view.subtotal * (view.feePercent / 100));
   const viewTotal = view.subtotal + viewFee;
@@ -440,10 +458,11 @@ export default function InvoiceApp() {
             <button
               key={l}
               onClick={() => setLang(l)}
-              className={`px-2 py-0.5 border ${lang === l
+              className={`px-2 py-0.5 border ${
+                lang === l
                   ? 'bg-white text-black border-white font-bold'
                   : 'border-zinc-600 text-zinc-400 hover:text-white'
-                }`}
+              }`}
             >
               {l.toUpperCase()}
             </button>
@@ -451,7 +470,15 @@ export default function InvoiceApp() {
         </div>
       </header>
 
-      <main className="w-full max-w-lg px-4 pt-6 space-y-6 flex-1">
+      <main className="w-full max-w-lg px-4 pt-4 space-y-6 flex-1">
+        {/* 구글 봇이 즉시 읽을 수 있도록 화면 상단에 항상 노출되는 서비스 안내 및 가이드 텍스트 박스 */}
+        <div className="bg-white border border-zinc-300 p-4 space-y-2 text-xs text-zinc-700">
+          <h2 className="font-bold text-zinc-900 border-b border-zinc-200 pb-1">{t.aboutTitle}</h2>
+          <p className="leading-relaxed">{t.aboutContent}</p>
+          <h2 className="font-bold text-zinc-900 border-b border-zinc-200 pt-2 pb-1">{t.guideTitle}</h2>
+          <p className="whitespace-pre-line leading-relaxed text-zinc-600">{t.guideContent}</p>
+        </div>
+
         <div ref={receiptRef} className="w-full">
           {/* [테마 1] 표준 청구서 양식 */}
           {view.theme === 'tax' && (
@@ -809,10 +836,11 @@ export default function InvoiceApp() {
                   <button
                     key={th}
                     onClick={() => setTheme(th)}
-                    className={`py-2 border font-bold transition ${theme === th
+                    className={`py-2 border font-bold transition ${
+                      theme === th
                         ? 'bg-[#111111] text-white border-[#111111]'
                         : 'bg-zinc-50 text-zinc-700 border-zinc-300 hover:bg-zinc-100'
-                      }`}
+                    }`}
                   >
                     {t.themes[th]}
                   </button>
@@ -960,14 +988,14 @@ export default function InvoiceApp() {
 
         {/* 웹사이트 하단 공식 면책 및 악용 금지 고지 */}
         <footer className="pt-2 pb-6 text-center px-2">
-          <p className="text-[11px] text-zinc-500 leading-relaxed break-keep">
-            {t.footerDisclaimer}
+          <div className="text-[11px] text-zinc-500 leading-relaxed break-keep">
+            <p>{t.footerDisclaimer}</p>
             <div className="mt-2">
               <a href="/privacy" className="underline text-[11px] text-zinc-600 hover:text-black">
                 개인정보처리방침 / Privacy Policy
               </a>
             </div>
-          </p>
+          </div>
         </footer>
       </main>
 
@@ -983,7 +1011,6 @@ export default function InvoiceApp() {
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-4" />
           <p className="text-xs tracking-wider mb-4">{t.adNotice}</p>
 
-          {/* 구글 애드센스 광고 단위 삽입 영역 (승인 완료 시 자동으로 광고가 송출됨) */}
           <div className="w-full max-w-sm bg-white text-black p-4 rounded-xl shadow-lg">
             <div className="min-h-[180px] flex flex-col items-center justify-center border border-dashed border-zinc-300 rounded-lg p-2 bg-zinc-50 relative">
               <ins
@@ -1002,7 +1029,7 @@ export default function InvoiceApp() {
 
       {/* 웹사이트 하단 고정 배너 광고 영역 */}
       <div className="fixed bottom-0 left-0 right-0 h-14 bg-zinc-200 border-t border-zinc-300 flex items-center justify-center z-30">
-        <div className="w-[320px] h-[50px] bg-zinc-300 border border-zinc-400 flex items-center justify-center text-[10px] font-mono text-zinc-600">
+        <div className="w-[320px] h-[50px] bg-zinc-300 border border-zinc-400 flex items-center justify-center text-[10px] font-mono text-zinc-600 relative">
           <ins
             className="adsbygoogle"
             style={{ display: 'inline-block', width: '320px', height: '50px' }}
